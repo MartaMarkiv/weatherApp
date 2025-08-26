@@ -1,33 +1,64 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { useState, useCallback } from "react";
 import "./App.css";
+import api from "./api/api";
+import type { ForecastType } from "./types";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [city, setCity] = useState<string>("");
+  const [weatherForecast, setWeatherForecast] = useState<ForecastType>();
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
+  const changeSity = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setCity(e.target.value);
+
+  const getWeather = useCallback(() => {
+    const sendRequestForWeather = () => {
+      api
+        .get(
+          `current.json?key=${import.meta.env.VITE_WEATHER_KEY}&q=${city}&aqi=no`
+        )
+        .then((response) => {
+          const { current: weatherDetails } = response.data;
+          const {
+            wind_kph: windSpeed,
+            condition,
+            humidity,
+            temp_c: temperature,
+          } = weatherDetails;
+
+          setWeatherForecast({
+            conditions: condition.text,
+            humidity,
+            windSpeed,
+            temperature,
+            icon: condition.icon,
+          });
+        })
+        .catch((error) => {
+          console.log(error.response.data.error.message);
+          setErrorMessage(
+            error.response.data.error.message ||
+              "An error occurred, please try again later"
+          );
+        });
+    };
+    sendRequestForWeather();
+  }, [city]);
 
   return (
     <>
+      <h1>Weather forecast</h1>
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <div>
+          <input type="text" onChange={changeSity} />
+          <button onClick={getWeather} disabled={!city || city.length <= 2}>
+            get
+          </button>
+          {errorMessage !== "" && (
+            <p className="error-message">{errorMessage}</p>
+          )}
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   );
 }
