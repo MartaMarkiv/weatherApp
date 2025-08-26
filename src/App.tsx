@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import "./App.css";
 import api from "./api/api";
 import type { ForecastType } from "./types";
+import ForecastCard from "./components/forecastCard/ForecastCard";
 
 function App() {
   const [city, setCity] = useState<string>("");
@@ -40,6 +41,7 @@ function App() {
             error.response.data.error.message ||
               "An error occurred, please try again later"
           );
+          setTimeout(() => setErrorMessage(""), 3000);
         });
     };
     sendRequestForWeather();
@@ -59,6 +61,7 @@ function App() {
           )}
         </div>
       </div>
+      {!!weatherForecast && <ForecastCard {...weatherForecast} />}
     </>
   );
 }
