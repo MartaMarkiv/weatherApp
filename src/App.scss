@@ -1,0 +1,38 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.get-weather-inputs {
+  button, input {
+    font-family: inherit;
+    font-size: 16px;
+  }
+
+  input {
+    padding: 10px 15px;
+    border-radius: 10px 0 0 10px;
+    border: none;
+
+    &:focus {
+      border: none;
+      outline: none;
+    }
+  }
+
+  button {
+    background-color: #6069ff;
+    color: #ffffff;
+    border-radius: 10px;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+
+    &:disabled {
+      color: #c7c6c6;
+      cursor: default;
+    }
+  }
+}

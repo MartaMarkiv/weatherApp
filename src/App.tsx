@@ -1,7 +1,7 @@
-import { useState, useCallback } from "react";
-import "./App.css";
+import { useState, useCallback, type FormEvent } from "react";
+import "./App.scss";
 import api from "./api/api";
-import type { ForecastType } from "./types";
+import type { ForecastType, ForecastApiResponse } from "./types";
 import ForecastCard from "./components/forecastCard/ForecastCard";
 
 function App() {
@@ -9,13 +9,15 @@ function App() {
   const [weatherForecast, setWeatherForecast] = useState<ForecastType>();
   const [errorMessage, setErrorMessage] = useState<string>("");
 
-  const changeSity = (e: React.ChangeEvent<HTMLInputElement>) =>
+  const changeCity = (e: React.ChangeEvent<HTMLInputElement>) =>
     setCity(e.target.value);
 
-  const getWeather = useCallback(() => {
+  const getWeather = useCallback((e:FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     const sendRequestForWeather = () => {
       api
-        .get(
+        .get<ForecastApiResponse>(
           `current.json?key=${import.meta.env.VITE_WEATHER_KEY}&q=${city}&aqi=no`
         )
         .then((response) => {
@@ -30,13 +32,13 @@ function App() {
           setWeatherForecast({
             conditions: condition.text,
             humidity,
-            windSpeed,
+            windSpeed: windSpeed / 3.6,
             temperature,
             icon: condition.icon,
           });
         })
         .catch((error) => {
-          console.log(error.response.data.error.message);
+          console.log(error.response?.data?.error?.message);
           setErrorMessage(
             error.response.data.error.message ||
               "An error occurred, please try again later"
@@ -51,17 +53,17 @@ function App() {
     <>
       <h1>Weather forecast</h1>
       <div>
-        <div>
-          <input type="text" onChange={changeSity} />
-          <button onClick={getWeather} disabled={!city || city.length <= 2}>
-            get
+        <div className="get-weather-inputs">
+          <form onSubmit={getWeather}>
+          <input type="text" onChange={changeCity} />
+          <button type="submit" disabled={!city || city.length <= 2}>
+            Get weather
           </button>
-          {errorMessage !== "" && (
-            <p className="error-message">{errorMessage}</p>
-          )}
+          </form>
         </div>
+        {errorMessage !== "" && <p className="error-message">{errorMessage}</p>}
       </div>
-      {!!weatherForecast && <ForecastCard {...weatherForecast} />}
+      {weatherForecast && <ForecastCard {...weatherForecast} />}
     </>
   );
 }

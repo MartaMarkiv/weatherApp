@@ -10,13 +10,13 @@ export default function ForecastCard({
 }: ForecastType) {
   return (
     <div className="forecast-card">
-      <div>
+      <div className="card-header">
         <img alt="Weather forecas" src={icon} />
         <p>{temperature}</p>
       </div>
-      <p>{conditions}</p>
+      <p className="conditions">{conditions}</p>
       <p>Humidity: {humidity}%</p>
-      <p>Wind: {windSpeed} km/h</p>
+      <p>Wind: {windSpeed} m/s</p>
     </div>
   );
 }
