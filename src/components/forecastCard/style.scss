@@ -1,14 +1,24 @@
 .forecast-card {
+  background-color: #ffff;
+  font-size: 1.2rem;
   border-radius: 20px;
-  border: 1px solid rgb(166, 196, 241);
+  padding: 15px;
 
   .card-header {
+    font-size: 2rem;
+    font-weight: 500;
     display: flex;
     align-items: center;
     justify-content: center;
+
+    img {
+      min-width: 90px;
+      height: auto;
+    }
   }
 
   .conditions {
     font-size: 2rem;
+    margin-bottom: 20px;
   }
 }

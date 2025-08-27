@@ -5,8 +5,11 @@
   text-align: center;
 }
 
-.get-weather-inputs {
-  button, input {
+.get-weather-form {
+  margin-bottom: 50px;
+
+  button,
+  input {
     font-family: inherit;
     font-size: 16px;
   }
@@ -35,4 +38,9 @@
       cursor: default;
     }
   }
+}
+
+.error-message {
+  color: #f80404;
+  margin-top: 20px;
 }

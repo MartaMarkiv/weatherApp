@@ -12,7 +12,7 @@ export default function ForecastCard({
     <div className="forecast-card">
       <div className="card-header">
         <img alt="Weather forecas" src={icon} />
-        <p>{temperature}</p>
+        <p>{temperature}&deg;C.</p>
       </div>
       <p className="conditions">{conditions}</p>
       <p>Humidity: {humidity}%</p>

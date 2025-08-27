@@ -9,59 +9,73 @@ function App() {
   const [weatherForecast, setWeatherForecast] = useState<ForecastType>();
   const [errorMessage, setErrorMessage] = useState<string>("");
 
-  const changeCity = (e: React.ChangeEvent<HTMLInputElement>) =>
+  const changeCity = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setWeatherForecast(undefined);
     setCity(e.target.value);
+  };
 
-  const getWeather = useCallback((e:FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const getWeather = useCallback(
+    (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
 
-    const sendRequestForWeather = () => {
-      api
-        .get<ForecastApiResponse>(
-          `current.json?key=${import.meta.env.VITE_WEATHER_KEY}&q=${city}&aqi=no`
-        )
-        .then((response) => {
-          const { current: weatherDetails } = response.data;
-          const {
-            wind_kph: windSpeed,
-            condition,
-            humidity,
-            temp_c: temperature,
-          } = weatherDetails;
+      const sendRequestForWeather = () => {
+        api
+          .get<ForecastApiResponse>(
+            `current.json?key=${import.meta.env.VITE_WEATHER_KEY}&q=${city}&aqi=no`
+          )
+          .then((response) => {
+            const { current: weatherDetails } = response.data;
+            const {
+              wind_kph: windSpeed,
+              condition,
+              humidity,
+              temp_c: temperature,
+            } = weatherDetails;
 
-          setWeatherForecast({
-            conditions: condition.text,
-            humidity,
-            windSpeed: windSpeed / 3.6,
-            temperature,
-            icon: condition.icon,
+            setWeatherForecast({
+              conditions: condition.text,
+              humidity,
+              windSpeed: Number((windSpeed / 3.6).toFixed(2)),
+              temperature,
+              icon: condition.icon,
+            });
+          })
+          .catch((error) => {
+            console.log(error.response?.data?.error?.message);
+            setErrorMessage(
+              error.response.data.error.message ||
+                "An error occurred, please try again later"
+            );
+            setTimeout(() => setErrorMessage(""), 3000);
           });
-        })
-        .catch((error) => {
-          console.log(error.response?.data?.error?.message);
-          setErrorMessage(
-            error.response.data.error.message ||
-              "An error occurred, please try again later"
-          );
-          setTimeout(() => setErrorMessage(""), 3000);
-        });
-    };
-    sendRequestForWeather();
-  }, [city]);
+      };
+      sendRequestForWeather();
+    },
+    [city]
+  );
 
   return (
     <>
       <h1>Weather forecast</h1>
       <div>
-        <div className="get-weather-inputs">
+        <div className="get-weather-form">
           <form onSubmit={getWeather}>
-          <input type="text" onChange={changeCity} />
-          <button type="submit" disabled={!city || city.length <= 2}>
-            Get weather
-          </button>
+            <input
+              type="text"
+              onChange={changeCity}
+              name="city"
+              value={city}
+              placeholder="Enter city"
+              autoComplete="off"
+            />
+            <button type="submit" disabled={!city || city.length <= 2}>
+              Get weather
+            </button>
           </form>
+          {errorMessage !== "" && (
+            <p className="error-message">{errorMessage}</p>
+          )}
         </div>
-        {errorMessage !== "" && <p className="error-message">{errorMessage}</p>}
       </div>
       {weatherForecast && <ForecastCard {...weatherForecast} />}
     </>
