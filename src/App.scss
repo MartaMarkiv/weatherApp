@@ -8,6 +8,11 @@
 .get-weather-form {
   margin-bottom: 50px;
 
+  form {
+    display: flex;
+    align-items: center;
+  }
+
   button,
   input {
     font-family: inherit;
@@ -18,6 +23,8 @@
     padding: 10px 15px;
     border-radius: 10px 0 0 10px;
     border: none;
+    flex: 1;
+    box-sizing: border-box;
 
     &:focus {
       border: none;
@@ -28,7 +35,7 @@
   button {
     background-color: #6069ff;
     color: #ffffff;
-    border-radius: 10px;
+    border-radius: 0 10px 10px 0;
     padding: 10px 15px;
     border: none;
     cursor: pointer;
@@ -43,4 +50,23 @@
 .error-message {
   color: #f80404;
   margin-top: 20px;
+}
+
+@media (max-width: 384px) {
+  .get-weather-form {
+    form {
+      flex-direction: column;
+      align-items: flex-end;
+
+      input,
+      button {
+        border-radius: 10px;
+      }
+
+      input {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+    }
+  }
 }

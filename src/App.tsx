@@ -4,10 +4,14 @@ import api from "./api/api";
 import type { ForecastType, ForecastApiResponse } from "./types";
 import ForecastCard from "./components/forecastCard/ForecastCard";
 
+const cashKey: string = "weather_city_";
+const expireTime: number = 10 * 60 * 1000; // 10 minutes in milliseconds
+
 function App() {
   const [city, setCity] = useState<string>("");
   const [weatherForecast, setWeatherForecast] = useState<ForecastType>();
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const changeCity = (e: React.ChangeEvent<HTMLInputElement>) => {
     setWeatherForecast(undefined);
@@ -32,13 +36,20 @@ function App() {
               temp_c: temperature,
             } = weatherDetails;
 
-            setWeatherForecast({
+            const weather: ForecastType = {
               conditions: condition.text,
               humidity,
               windSpeed: Number((windSpeed / 3.6).toFixed(2)),
               temperature,
               icon: condition.icon,
-            });
+            };
+
+            setWeatherForecast(weather);
+
+            localStorage.setItem(
+              `${cashKey}_${city}`,
+              JSON.stringify({ value: weather, time: new Date().getTime() })
+            );
           })
           .catch((error) => {
             console.log(error.response?.data?.error?.message);
@@ -47,9 +58,31 @@ function App() {
                 "An error occurred, please try again later"
             );
             setTimeout(() => setErrorMessage(""), 3000);
-          });
+          })
+          .finally(() => setIsLoading(false));
       };
-      sendRequestForWeather();
+
+      if (city.length <= 2 || !city) return; //The city name must contain at least 3 characters.
+
+      setIsLoading(true);
+
+      const cashedValue: string | null = localStorage.getItem(
+        `${cashKey}_${city}`
+      );
+
+      if (cashedValue) {
+        const { value, time } = JSON.parse(cashedValue);
+        const currentTime = new Date().getTime();
+        if (currentTime - time < expireTime) {
+          setWeatherForecast(value);
+          setIsLoading(false);
+        } else {
+          localStorage.removeItem(`${cashKey}_${city}`);
+          sendRequestForWeather();
+        }
+      } else {
+        sendRequestForWeather();
+      }
     },
     [city]
   );
@@ -72,6 +105,7 @@ function App() {
               Get weather
             </button>
           </form>
+          {isLoading && <p>Please, wait a moment</p>}
           {errorMessage !== "" && (
             <p className="error-message">{errorMessage}</p>
           )}
