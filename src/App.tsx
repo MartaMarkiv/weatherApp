@@ -87,10 +87,23 @@ function App() {
     [city]
   );
 
+  const getWeatherType = (weatherCondition: string) => {
+    const conditionString = weatherCondition.toLowerCase();
+
+    if (conditionString.includes("sunny")) return "sunny";
+    if (conditionString.includes("rain")) return "rainy";
+    if (conditionString.includes("partly cloudy")) return "partly-cloudy";
+    if (conditionString.includes("cloud")) return "cloudy";
+    if (conditionString.includes("snow")) return "snowy";
+    return "";
+  };
+
   return (
-    <>
+    <section
+      className={`forecast-page ${weatherForecast ? getWeatherType(weatherForecast.conditions) : ""}`}
+    >
       <h1>Weather forecast</h1>
-      <div>
+      <div className="forecast-container">
         <div className="get-weather-form">
           <form onSubmit={getWeather}>
             <input
@@ -110,9 +123,10 @@ function App() {
             <p className="error-message">{errorMessage}</p>
           )}
         </div>
+
+        {weatherForecast && <ForecastCard {...weatherForecast} />}
       </div>
-      {weatherForecast && <ForecastCard {...weatherForecast} />}
-    </>
+    </section>
   );
 }
 

@@ -1,48 +1,99 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  flex: 1;
   text-align: center;
 }
 
-.get-weather-form {
-  margin-bottom: 50px;
+.forecast-page {
+  background: radial-gradient(
+    circle,
+    rgba(255, 238, 89, 0.47) 0%,
+    rgba(120, 250, 255, 0.73) 100%
+  );
+  padding: 2rem;
+  flex: 1;
+  height: 100%;
+  box-sizing: border-box;
 
-  form {
-    display: flex;
-    align-items: center;
+  &.sunny {
+    background: linear-gradient(
+      136deg,
+      rgba(255, 209, 43, 1) 0%,
+      rgba(255, 238, 107, 0.73) 52%
+    );
   }
 
-  button,
-  input {
-    font-family: inherit;
-    font-size: 16px;
+  &.rainy {
+    background: linear-gradient(
+      136deg,
+      rgba(43, 138, 255, 1) 0%,
+      rgba(0, 204, 255, 0.73) 52%
+    );
   }
+  &.partly-cloudy {
+    background: linear-gradient(
+      136deg,
+      rgba(255, 255, 158, 1) 0%,
+      rgba(220, 224, 224, 0.64) 52%
+    );
+  }
+  &.cloudy {
+    background: linear-gradient(
+      136deg,
+      rgba(128, 128, 128, 1) 0%,
+      rgba(191, 191, 191, 0.73) 52%
+    );
+  }
+  &.snowy {
+    background: linear-gradient(
+      136deg,
+      rgba(227, 244, 255, 1) 0%,
+      rgba(242, 255, 255, 0.64) 52%
+    );
+  }
+}
 
-  input {
-    padding: 10px 15px;
-    border-radius: 10px 0 0 10px;
-    border: none;
-    flex: 1;
-    box-sizing: border-box;
+.forecast-container {
+  max-width: 580px;
+  margin: 0 auto;
+  .get-weather-form {
+    margin-bottom: 50px;
 
-    &:focus {
-      border: none;
-      outline: none;
+    form {
+      display: flex;
+      align-items: center;
     }
-  }
 
-  button {
-    background-color: #6069ff;
-    color: #ffffff;
-    border-radius: 0 10px 10px 0;
-    padding: 10px 15px;
-    border: none;
-    cursor: pointer;
+    button,
+    input {
+      font-family: inherit;
+      font-size: 16px;
+    }
 
-    &:disabled {
-      color: #c7c6c6;
-      cursor: default;
+    input {
+      padding: 10px 15px;
+      border-radius: 10px 0 0 10px;
+      border: none;
+      flex: 1;
+      box-sizing: border-box;
+
+      &:focus {
+        border: none;
+        outline: none;
+      }
+    }
+
+    button {
+      background-color: #6069ff;
+      color: #ffffff;
+      border-radius: 0 10px 10px 0;
+      padding: 10px 15px;
+      border: none;
+      cursor: pointer;
+
+      &:disabled {
+        color: #c7c6c6;
+        cursor: default;
+      }
     }
   }
 }
